@@ -1,6 +1,8 @@
 # Shopify AI Forecast & Inventory Intelligence Bridge
 
-> **Open-Source (MIT)** | Companion to `shopify-ai-forecast-app` | Open for PRs & Discussions
+> **Open-Source (MIT)** | Companion to `shopify-ai-forecast-app` | Part of the Salesforce Open-Source Ecosystem Portfolio
+
+---
 
 ## 1. Overview & Vision
 A vertical open-source companion app connecting your **Shopify AI Forecast Agent** (`shopify-ai-forecast-app`) directly into Salesforce CRM.
@@ -9,31 +11,11 @@ While generic connectors only move raw orders and customer records, this special
 
 ---
 
-## 2. Core Features (Deep Synergy with `shopify-ai-forecast-app`)
-
-### A. Proactive Stockout & Reorder Automation
-- Whenever the deterministic forecast engine in your Shopify app calculates that a SKU is hitting its reorder point (`days_of_cover <= lead_time`):
-  - A webhook is dispatched to Salesforce.
-  - Automatically generates an urgent **Procurement Task** or **Case** for the purchasing manager.
-  - Can automatically draft a **Purchase Order / Vendor Order record** with recommended order quantities.
-
-### B. "Shopify Forecast Intelligence" LWC Component
-- An embedded Lightning Web Component on the Salesforce `Product2`, `Opportunity`, or Home page.
-- Displays live inventory health directly from the Shopify app:
-  - Multi-location stock count.
-  - Weighted Moving Average (WMA) daily usage.
-  - Calculated Days-of-Cover and Reorder Point.
-  - Status badges: `Critical Stockout Risk`, `Reorder Soon`, `Healthy`.
-
-### C. In-Salesforce Conversational AI Agent
-- Salesforce users can open the LWC card and ask conversational inventory questions:
-  - *"Which products will run out before Black Friday?"*
-  - *"How many units of SKU-104 should we order from supplier X?"*
-- Powered by the same BYOK (Bring Your Own Key) Gemini / Claude architecture implemented in your Shopify app, ensuring zero hallucination over the deterministic numbers.
-
-### D. B2B Deal Protection (Opportunity Stock Check)
-- When a sales rep adds a product to an Opportunity or Quote in Salesforce, the component verifies current Shopify stock and forecasted restock dates in real time.
-- Prevents sales reps from committing large wholesale orders to inventory that is already depleted on the storefront.
+## 2. Killer Differentiators & Features
+- 📈 **Proactive Stockout & Reorder Automation:** When the Shopify engine calculates that a SKU is hitting its reorder point (`days_of_cover <= lead_time`), automatically spawns an urgent Procurement Task or Purchase Order in Salesforce.
+- 📊 **"Forecast Intelligence" LWC Component:** Embedded card on `Product2`, `Opportunity`, and Home pages displaying live multi-location stock, daily consumption velocity, days-of-cover, and stockout risk badges.
+- 🤖 **In-Salesforce Conversational AI Agent:** Built-in chat interface powered by BYOK (Bring Your Own Key) Gemini / Claude architecture for querying inventory trends without hallucinations.
+- 🛡️ **B2B Deal Protection (Opportunity Stock Check):** Validates inventory availability and projected restock dates in real time when sales reps add products to Opportunities or Quotes.
 
 ---
 
@@ -62,14 +44,28 @@ flowchart TD
 
 ---
 
-## 4. Market Position & AppExchange Moat
-- **Unique Selling Proposition (USP):** No other connector on AppExchange or the Shopify App Store links AI demand forecasting with Salesforce CRM operations.
-- **Cross-Promotion:** Merchants installing your Shopify app are prompted: *"Also using Salesforce? Install our free Salesforce Forecast Bridge on AppExchange to keep your sales and ops teams in sync."*
+## 4. Standardized 4-Phase Delivery Roadmap
 
----
+### 📋 Phase 1: Local Development & Differentiators
+- [ ] Inbound webhook receiver Apex REST service (`ShopifyForecastReceiver.cls`).
+- [ ] Forecast Intelligence LWC (`shopifyForecastIntelligence`) with SLDS metric tiles and status indicators.
+- [ ] In-Salesforce AI Chat Assistant LWC with BYOK integration (`shopifyForecastChat`).
+- [ ] Opportunity Line Item inventory validation trigger / invocable action.
+- [ ] $\ge 85\%$ Apex unit test coverage and Jest test suite.
 
-## 5. Open-Source Roadmap & Good First Issues for PRs
-- [ ] Automated Slack / Microsoft Teams notification bridge when stockout tasks trigger.
-- [ ] Supplier lead-time variance analysis graph inside the LWC component.
-- [ ] Multi-location warehouse inventory transfer recommendation engine.
-- [ ] Flow screen action for reps to run an instant inventory check during client calls.
+### 📋 Phase 2: GitHub & Open-Source Engineering
+- [ ] Git repository initialized: `github.com/arsalan-arshad/shopify-ai-forecast-bridge`.
+- [ ] Automated GitHub Actions CI workflow (`.github/workflows/ci.yml`).
+- [ ] Automated CD workflow (`.github/workflows/cd.yml`).
+- [ ] Protected `main` branch ruleset.
+
+### 📋 Phase 3: 2GP Packaging & Distribution
+- [ ] Second-Generation (2GP) Unlocked Package created: `ShopifyAIForecastBridge`.
+- [ ] Package version built and validated against code coverage requirements.
+- [ ] Promoted to **`Released`** status.
+- [ ] Direct 1-Click Install URLs generated for Production and Sandbox.
+
+### 📋 Phase 4: Branding & AppExchange Readiness
+- [ ] 7 Visual Assets: App Icon (120x120), Hero Banner (16:9), and 4 UI walkthrough screenshots.
+- [ ] Production-grade `README.md` with synergy guide connecting the Shopify App with Salesforce.
+- [ ] Complete `APPEXCHANGE_LISTING.md` submission dossier.
