@@ -46,9 +46,9 @@ jobs:
             ## 🚀 Shopify AI Forecast & Inventory Intelligence Bridge `${{ steps.vars.outputs.tag }}`
 
             ### 📦 2GP Package Installation Links
-            - **Production / Developer Edition:** [Install in Production](https://login.salesforce.com/packaging/installPackage.apexp?p0=04tg7000000YA1sAAG)
-            - **Sandbox:** [Install in Sandbox](https://test.salesforce.com/packaging/installPackage.apexp?p0=04tg7000000YA1sAAG)
-            - **Package ID:** `04tg7000000YA1sAAG`
+            - **Production / Developer Edition:** [Install in Production](https://login.salesforce.com/packaging/installPackage.apexp?p0=04tg7000000YxVVAA0)
+            - **Sandbox:** [Install in Sandbox](https://test.salesforce.com/packaging/installPackage.apexp?p0=04tg7000000YxVVAA0)
+            - **Package ID:** `04tg7000000YxVVAA0`
 
             ### ⚡ What's New in This Release
             - **Deterministic Forecast Engine Bridge:** Ingestion of Shopify app WMA velocity, days-of-cover, and lead-time calculations directly into Salesforce.

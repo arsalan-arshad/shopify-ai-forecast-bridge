@@ -47,7 +47,7 @@ When publishing a new release, versions across all configuration files must stay
 | :------------------ | :----------------- | :-------------------------------------------------------- |
 | `package.json`      | `"version"`        | `"0.1.0"`                                                 |
 | `sfdx-project.json` | `"versionNumber"`  | `"0.1.0.NEXT"`                                            |
-| `sfdx-project.json` | `"packageAliases"` | `"ShopifyAIForecastBridge@0.1.0-1": "04tg7000000YA1sAAG"` |
+| `sfdx-project.json` | `"packageAliases"` | `"ShopifyAIForecastBridge@0.1.0-1": "04tg7000000YxVVAA0"` |
 | Git Tag             | Tag Name           | `v0.1.0`                                                  |
 
 ### Step-by-Step Release Workflow

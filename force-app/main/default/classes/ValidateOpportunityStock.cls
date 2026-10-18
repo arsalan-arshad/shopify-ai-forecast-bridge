@@ -73,7 +73,6 @@ public with sharing class ValidateOpportunityStock {
                 SELECT Id, StockKeepingUnit, ProductCode
                 FROM Product2
                 WHERE Id IN :productIds
-                WITH USER_MODE
             ]) {
                 String code = String.isNotBlank(p.StockKeepingUnit) ? p.StockKeepingUnit : p.ProductCode;
                 if (String.isNotBlank(code)) {
@@ -91,7 +90,6 @@ public with sharing class ValidateOpportunityStock {
                        Daily_Velocity_WMA__c, Days_Of_Cover__c, Lead_Time_Days__c, Stockout_Risk_Level__c
                 FROM Shopify_Inventory_Snapshot__c
                 WHERE SKU__c IN :skus
-                WITH USER_MODE
             ]) {
                 snapshotMap.put(s.SKU__c, s);
             }
