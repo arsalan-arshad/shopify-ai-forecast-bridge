@@ -7,22 +7,14 @@
           label="Draft PO"
           icon-name="utility:new"
           variant="brand"
-          onclick="
-            {
-              handleOpenReorderModal;
-            }
-          "
-          disabled="{isActionDisabled}"
+          onclick={handleOpenReorderModal}
+          disabled={isActionDisabled}
         >
         </lightning-button>
         <lightning-button-icon
           icon-name="utility:refresh"
           alternative-text="Refresh Inventory Data"
-          onclick="
-            {
-              handleRefresh;
-            }
-          "
+          onclick={handleRefresh}
         >
         </lightning-button-icon>
       </lightning-button-group>
@@ -30,14 +22,14 @@
 
     <div class="slds-p-around_medium">
       <!-- Loading State -->
-      <template if:true="{isLoading}">
+      <template if:true={isLoading}>
         <div class="slds-is-relative slds-p-around_x-large">
           <lightning-spinner alternative-text="Loading forecast telemetry..." size="medium"></lightning-spinner>
         </div>
       </template>
 
       <!-- Error State -->
-      <template if:true="{errorMessage}">
+      <template if:true={errorMessage}>
         <div
           class="slds-notify slds-notify_alert slds-theme_alert-texture slds-theme_error slds-m-bottom_medium"
           role="alert"
@@ -48,13 +40,13 @@
       </template>
 
       <!-- Data Loaded State -->
-      <template if:true="{hasData}">
+      <template if:true={hasData}>
         <!-- Health Status Banner -->
         <div
           class="slds-box slds-box_x-small slds-m-bottom_medium health-banner slds-grid slds-grid_vertical-align-center slds-grid_align-spread"
         >
           <div class="slds-grid slds-grid_vertical-align-center">
-            <lightning-badge label="{inventoryData.stockoutRiskLevel}" class="{badgeClass}"></lightning-badge>
+            <lightning-badge label={inventoryData.stockoutRiskLevel} class={badgeClass}></lightning-badge>
             <div class="slds-m-left_small">
               <h3 class="slds-text-heading_small slds-text-title_bold">{inventoryData.productTitle}</h3>
               <p class="slds-text-body_small slds-text-color_weak">
@@ -123,8 +115,8 @@
       </template>
 
       <!-- Empty State -->
-      <template if:false="{hasData}">
-        <template if:false="{isLoading}">
+      <template if:false={hasData}>
+        <template if:false={isLoading}>
           <div class="slds-illustration slds-illustration_small slds-p-around_large slds-text-align_center">
             <div class="slds-text-heading_medium slds-m-bottom_x-small">No Forecast Snapshot Available</div>
             <p class="slds-text-body_regular slds-text-color_weak">
@@ -136,18 +128,14 @@
     </div>
 
     <!-- Modal: Draft Purchase Order -->
-    <template if:true="{isModalOpen}">
+    <template if:true={isModalOpen}>
       <section role="dialog" tabindex="-1" class="slds-modal slds-fade-in-open slds-modal_small" aria-modal="true">
         <div class="slds-modal__container">
           <header class="slds-modal__header">
             <button
               class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse"
               title="Close"
-              onclick="
-                {
-                  handleCloseReorderModal;
-                }
-              "
+              onclick={handleCloseReorderModal}
             >
               <lightning-icon icon-name="utility:close" alternative-text="close" size="small"></lightning-icon>
             </button>
@@ -155,17 +143,13 @@
           </header>
           <div class="slds-modal__content slds-p-around_medium">
             <div class="slds-form slds-form_stacked">
-              <lightning-input label="SKU" value="{inventoryData.sku}" disabled></lightning-input>
-              <lightning-input label="Supplier" value="{inventoryData.supplierName}" disabled></lightning-input>
+              <lightning-input label="SKU" value={inventoryData.sku} disabled></lightning-input>
+              <lightning-input label="Supplier" value={inventoryData.supplierName} disabled></lightning-input>
               <lightning-input
                 type="number"
                 label="Order Quantity (Units)"
-                value="{reorderQtyInput}"
-                onchange="
-                  {
-                    handleQtyChange;
-                  }
-                "
+                value={reorderQtyInput}
+                onchange={handleQtyChange}
                 required
               >
               </lightning-input>
@@ -178,20 +162,12 @@
           <footer class="slds-modal__footer">
             <lightning-button
               label="Cancel"
-              onclick="
-                {
-                  handleCloseReorderModal;
-                }
-              "
+              onclick={handleCloseReorderModal}
             ></lightning-button>
             <lightning-button
               label="Confirm &amp; Draft PO"
               variant="brand"
-              onclick="
-                {
-                  handleSubmitReorder;
-                }
-              "
+              onclick={handleSubmitReorder}
               class="slds-m-left_small"
             ></lightning-button>
           </footer>

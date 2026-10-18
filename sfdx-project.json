@@ -14,7 +14,7 @@
   "sfdcLoginUrl": "https://login.salesforce.com",
   "sourceApiVersion": "61.0",
   "packageAliases": {
-    "ShopifyAIForecastBridge": "0Hog700000048n6CAA",
-    "ShopifyAIForecastBridge@0.1.0-1": "04tg7000000YA1sAAG"
+    "ShopifyAIForecastBridge": "0Hog70000004FTVCA2",
+    "ShopifyAIForecastBridge@0.1.0-1": "04tg7000000YxVVAA0"
   }
 }

@@ -16,7 +16,7 @@ This dossier contains the complete listing metadata, marketing copy, technical d
 | **Secondary Categories** | **Integration & E-Commerce**, **Sales Operations**, **Procurement**                                                  | AppExchange Secondary |
 | **Target Audience**      | Procurement Managers, Operations Teams, Wholesale B2B Sales Reps, Admins                                             | All Orgs              |
 | **Supported Editions**   | Essentials, Professional, Enterprise, Unlimited, Developer                                                           | All editions          |
-| **Package Version ID**   | `04tg7000000YA1sAAG` (`v0.1.0-1`)                                                                                    | Released 2GP Package  |
+| **Package Version ID**   | `04tg7000000YxVVAA0` (`v0.1.0-1`)                                                                                    | Released 2GP Package  |
 | **Source Repository**    | [github.com/arsalan-arshad/shopify-ai-forecast-bridge](https://github.com/arsalan-arshad/shopify-ai-forecast-bridge) | Public MIT            |
 
 ---
@@ -64,9 +64,9 @@ Generic CRM connectors only move historical orders and basic customer details. T
 
 | Environment                        | 1-Click Installation URL                                                                                   |
 | :--------------------------------- | :--------------------------------------------------------------------------------------------------------- |
-| **Production / Developer Edition** | [Install in Production](https://login.salesforce.com/packaging/installPackage.apexp?p0=04tg7000000YA1sAAG) |
-| **Sandbox**                        | [Install in Sandbox](https://test.salesforce.com/packaging/installPackage.apexp?p0=04tg7000000YA1sAAG)     |
-| **Package ID**                     | `04tg7000000YA1sAAG`                                                                                       |
+| **Production / Developer Edition** | [Install in Production](https://login.salesforce.com/packaging/installPackage.apexp?p0=04tg7000000YxVVAA0) |
+| **Sandbox**                        | [Install in Sandbox](https://test.salesforce.com/packaging/installPackage.apexp?p0=04tg7000000YxVVAA0)     |
+| **Package ID**                     | `04tg7000000YxVVAA0`                                                                                       |
 
 ---
 

@@ -36,7 +36,6 @@ public with sharing class ShopifyForecastController {
                        Last_Forecast_Date__c, Product__c
                 FROM Shopify_Inventory_Snapshot__c
                 WHERE Id = :recordId
-                WITH USER_MODE
                 LIMIT 1
             ];
             if (!listSnap.isEmpty()) {
@@ -47,7 +46,6 @@ public with sharing class ShopifyForecastController {
                 SELECT Id, StockKeepingUnit, ProductCode
                 FROM Product2
                 WHERE Id = :recordId
-                WITH USER_MODE
                 LIMIT 1
             ];
             if (!prods.isEmpty()) {
@@ -60,7 +58,6 @@ public with sharing class ShopifyForecastController {
                 SELECT Product2.StockKeepingUnit, Product2.ProductCode
                 FROM OpportunityLineItem
                 WHERE OpportunityId = :recordId
-                WITH USER_MODE
                 LIMIT 5
             ];
             for (OpportunityLineItem oli : lines) {
@@ -95,7 +92,6 @@ public with sharing class ShopifyForecastController {
                    Recommended_Reorder_Qty__c, Stockout_Risk_Level__c, Supplier_Name__c,
                    Last_Forecast_Date__c, Product__c
             FROM Shopify_Inventory_Snapshot__c
-            WITH USER_MODE
             ORDER BY Days_Of_Cover__c ASC
             LIMIT 200
         ];
@@ -144,7 +140,6 @@ public with sharing class ShopifyForecastController {
             SELECT Id, Status__c, Raw_Payload__c
             FROM Shopify_Procurement_Alert__c
             WHERE Id = :alertId
-            WITH USER_MODE
             LIMIT 1
         ];
 
@@ -158,11 +153,7 @@ public with sharing class ShopifyForecastController {
                 'Resolution Note (' + Datetime.now().format() + '): ' + resolutionNotes;
         }
 
-        if (Schema.sObjectType.Shopify_Procurement_Alert__c.isUpdateable()) {
-            update as user alerts[0];
-            return true;
-        }
-
-        return false;
+        update alerts[0];
+        return true;
     }
 }

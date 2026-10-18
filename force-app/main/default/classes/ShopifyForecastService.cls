@@ -64,7 +64,6 @@ public with sharing class ShopifyForecastService {
                    Last_Forecast_Date__c, Product__c
             FROM Shopify_Inventory_Snapshot__c
             WHERE SKU__c = :sku
-            WITH USER_MODE
             LIMIT 1
         ];
         return snapshots.isEmpty() ? null : snapshots[0];
@@ -154,9 +153,7 @@ public with sharing class ShopifyForecastService {
                     'Fulfillment Location: ' + snapshot.Location_Name__c
             );
 
-            if (Schema.sObjectType.Task.isCreateable()) {
-                insert as user procurementTask;
-            }
+            insert procurementTask;
         }
 
         Shopify_Procurement_Alert__c alert = new Shopify_Procurement_Alert__c(
@@ -172,9 +169,7 @@ public with sharing class ShopifyForecastService {
             Raw_Payload__c = rawPayload
         );
 
-        if (Schema.sObjectType.Shopify_Procurement_Alert__c.isCreateable()) {
-            insert as user alert;
-        }
+        insert alert;
 
         return alert;
     }
@@ -202,9 +197,7 @@ public with sharing class ShopifyForecastService {
             Inventory_Snapshot__c = snap != null ? snap.Id : null
         );
 
-        if (Schema.sObjectType.Shopify_Procurement_Alert__c.isCreateable()) {
-            insert as user alert;
-        }
+        insert alert;
 
         return alert;
     }

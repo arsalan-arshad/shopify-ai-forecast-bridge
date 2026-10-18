@@ -2,7 +2,7 @@
 
 [![CI - Pull Request Verification](https://github.com/arsalan-arshad/shopify-ai-forecast-bridge/actions/workflows/ci.yml/badge.svg)](https://github.com/arsalan-arshad/shopify-ai-forecast-bridge/actions/workflows/ci.yml)
 [![CD - Auto Deploy on Main Merge](https://github.com/arsalan-arshad/shopify-ai-forecast-bridge/actions/workflows/cd.yml/badge.svg)](https://github.com/arsalan-arshad/shopify-ai-forecast-bridge/actions/workflows/cd.yml)
-[![2GP Package: Released](https://img.shields.io/badge/2GP%20Package-04tg7000000YA1sAAG-blue.svg)](https://login.salesforce.com/packaging/installPackage.apexp?p0=04tg7000000YA1sAAG)
+[![2GP Package: Released](https://img.shields.io/badge/2GP%20Package-04tg7000000YxVVAA0-blue.svg)](https://login.salesforce.com/packaging/installPackage.apexp?p0=04tg7000000YxVVAA0)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Apex Code Coverage](https://img.shields.io/badge/Apex%20Coverage-94%25-brightgreen.svg)](force-app/main/default/classes/)
 [![Design System: SLDS](https://img.shields.io/badge/UI-Lightning%20Design%20System-0176D3.svg)](https://www.lightningdesignsystem.com/)
@@ -84,7 +84,7 @@ flowchart TD
 ### 📋 Phase 3: 2GP Packaging & Distribution
 
 - [x] Second-Generation (2GP) Unlocked Package created: `ShopifyAIForecastBridge`.
-- [x] Package version built and validated against code coverage requirements (`04tg7000000YA1sAAG`).
+- [x] Package version built and validated against code coverage requirements (`04tg7000000YxVVAA0`).
 - [x] Promoted to **`Released`** status.
 - [x] Direct 1-Click Install URLs generated for Production and Sandbox.
 
@@ -101,13 +101,13 @@ flowchart TD
 
 | Environment                    | 1-Click Direct Installation Link                                                                           | Package Version ID                |
 | :----------------------------- | :--------------------------------------------------------------------------------------------------------- | :-------------------------------- |
-| **Production / Developer Org** | [Install in Production](https://login.salesforce.com/packaging/installPackage.apexp?p0=04tg7000000YA1sAAG) | `04tg7000000YA1sAAG` (`v0.1.0-1`) |
-| **Sandbox Org**                | [Install in Sandbox](https://test.salesforce.com/packaging/installPackage.apexp?p0=04tg7000000YA1sAAG)     | `04tg7000000YA1sAAG` (`v0.1.0-1`) |
+| **Production / Developer Org** | [Install in Production](https://login.salesforce.com/packaging/installPackage.apexp?p0=04tg7000000YxVVAA0) | `04tg7000000YxVVAA0` (`v0.1.0-1`) |
+| **Sandbox Org**                | [Install in Sandbox](https://test.salesforce.com/packaging/installPackage.apexp?p0=04tg7000000YxVVAA0)     | `04tg7000000YxVVAA0` (`v0.1.0-1`) |
 
 Or install via Salesforce CLI:
 
 ```bash
-sf package install --package 04tg7000000YA1sAAG --wait 30 --target-org my-org
+sf package install --package 04tg7000000YxVVAA0 --wait 30 --target-org my-org
 ```
 
 ---

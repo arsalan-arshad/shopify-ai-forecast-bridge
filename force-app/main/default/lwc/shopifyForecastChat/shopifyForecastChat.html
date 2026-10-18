@@ -10,11 +10,7 @@
           icon-name="utility:delete"
           alternative-text="Clear Chat History"
           title="Clear Chat History"
-          onclick="
-            {
-              handleClearChat;
-            }
-          "
+          onclick={handleClearChat}
         >
         </lightning-button-icon>
       </div>
@@ -24,16 +20,12 @@
       <!-- Suggested Prompt Chips -->
       <div class="suggested-chips slds-p-horizontal_small slds-p-top_small slds-scrollable_x">
         <span class="slds-text-title slds-m-right_x-small slds-align-middle">Quick Prompts:</span>
-        <template for:each="{suggestedPrompts}" for:item="prompt">
+        <template for:each={suggestedPrompts} for:item="prompt">
           <button
-            key="{prompt}"
+            key={prompt}
             class="chip-button"
-            data-prompt="{prompt}"
-            onclick="
-              {
-                handleSelectChip;
-              }
-            "
+            data-prompt={prompt}
+            onclick={handleSelectChip}
           >
             {prompt}
           </button>
@@ -42,22 +34,22 @@
 
       <!-- Messages Thread -->
       <div class="messages-viewport slds-p-around_small" role="log" aria-live="polite">
-        <template for:each="{messages}" for:item="msg">
-          <div key="{msg.id}" class="{msg.containerClass}">
-            <div class="{msg.bubbleClass}">
+        <template for:each={messages} for:item="msg">
+          <div key={msg.id} class={msg.containerClass}>
+            <div class={msg.bubbleClass}>
               <div class="msg-header slds-grid slds-grid_align-spread slds-m-bottom_xx-small">
                 <span class="sender-name">{msg.senderLabel}</span>
                 <span class="msg-time">{msg.timeStr}</span>
               </div>
               <div class="msg-content slds-rich-text-editor__output">
-                <lightning-formatted-rich-text value="{msg.formattedContent}"></lightning-formatted-rich-text>
+                <lightning-formatted-rich-text value={msg.formattedContent}></lightning-formatted-rich-text>
               </div>
             </div>
           </div>
         </template>
 
         <!-- Loading indicator -->
-        <template if:true="{isThinking}">
+        <template if:true={isThinking}>
           <div class="message-row assistant-row">
             <div class="message-bubble assistant-bubble typing-bubble">
               <span class="typing-dot"></span>
@@ -76,18 +68,10 @@
               type="text"
               variant="label-hidden"
               placeholder="Ask an inventory question (e.g., 'Which products will run out first?')..."
-              value="{userInput}"
-              onchange="
-                {
-                  handleInputChange;
-                }
-              "
-              onkeyup="
-                {
-                  handleKeyUp;
-                }
-              "
-              disabled="{isThinking}"
+              value={userInput}
+              onchange={handleInputChange}
+              onkeyup={handleKeyUp}
+              disabled={isThinking}
             >
             </lightning-input>
           </div>
@@ -96,12 +80,8 @@
               variant="brand"
               label="Ask AI"
               icon-name="utility:send"
-              onclick="
-                {
-                  handleSendMessage;
-                }
-              "
-              disabled="{isSendDisabled}"
+              onclick={handleSendMessage}
+              disabled={isSendDisabled}
             >
             </lightning-button>
           </div>

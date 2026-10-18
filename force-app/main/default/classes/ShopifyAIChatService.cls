@@ -41,7 +41,6 @@ public with sharing class ShopifyAIChatService {
                    Quantity_Reserved__c, Daily_Velocity_WMA__c, Days_Of_Cover__c, Lead_Time_Days__c,
                    Reorder_Point__c, Recommended_Reorder_Qty__c, Stockout_Risk_Level__c, Supplier_Name__c
             FROM Shopify_Inventory_Snapshot__c
-            WITH USER_MODE
             ORDER BY Days_Of_Cover__c ASC
             LIMIT 100
         ];

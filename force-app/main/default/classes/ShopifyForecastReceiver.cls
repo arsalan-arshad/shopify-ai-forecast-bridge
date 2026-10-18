@@ -131,17 +131,13 @@ global with sharing class ShopifyForecastReceiver {
             List<Product2> matchingProducts = [
                 SELECT Id FROM Product2
                 WHERE StockKeepingUnit = :payload.sku OR ProductCode = :payload.sku
-                WITH USER_MODE
                 LIMIT 1
             ];
             if (!matchingProducts.isEmpty()) {
                 snapshot.Product__c = matchingProducts[0].Id;
             }
 
-            if (Schema.sObjectType.Shopify_Inventory_Snapshot__c.isCreateable() &&
-                Schema.sObjectType.Shopify_Inventory_Snapshot__c.isUpdateable()) {
-                upsert as user snapshot SKU__c;
-            }
+            upsert snapshot SKU__c;
 
             responseObj.snapshotId = snapshot.Id;
 
