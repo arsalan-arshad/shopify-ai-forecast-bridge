@@ -1,6 +1,6 @@
 {
   "name": "shopify-ai-forecast-bridge",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Shopify AI Forecast & Inventory Intelligence Bridge - Open-source companion connecting Shopify demand forecasting with Salesforce CRM.",
   "type": "module",
   "scripts": {
