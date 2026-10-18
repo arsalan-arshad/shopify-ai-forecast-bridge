@@ -11,6 +11,16 @@ node_modules/
 .env.*
 !.env.example
 
-# OS files
+# Salesforce CLI Local Data
+.sf/
+.sfdx/
+
+# OS and Editor files
 .DS_Store
 Thumbs.db
+*.swp
+*.swo
+
+# Coverage and build output
+coverage/
+dist/

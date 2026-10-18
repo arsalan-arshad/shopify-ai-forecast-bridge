@@ -1,0 +1,1174 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Shopify AI Forecast Bridge — Interactive Salesforce Simulation &amp; Live Demo</title>
+
+    <!-- Salesforce Lightning Design System (SLDS) -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/design-system/2.22.1/styles/salesforce-lightning-design-system.min.css"
+    />
+
+    <!-- Google Fonts: Inter & JetBrains Mono -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <style>
+      :root {
+        --shopify-green: #008060;
+        --shopify-dark: #004c3f;
+        --salesforce-blue: #0176d3;
+        --salesforce-dark: #014486;
+        --accent-purple: #7928ca;
+        --critical-red: #ea001e;
+        --warning-amber: #fe9339;
+        --healthy-green: #2e844a;
+        --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        --font-mono: 'JetBrains Mono', monospace;
+      }
+
+      body {
+        font-family: var(--font-sans);
+        background-color: #f8fafc;
+        color: #1e293b;
+        margin: 0;
+        padding: 0;
+        -webkit-font-smoothing: antialiased;
+      }
+
+      /* Header */
+      .app-header {
+        background: linear-gradient(135deg, #004c3f 0%, #008060 35%, #0176d3 75%, #014486 100%);
+        color: #ffffff;
+        padding: 28px 32px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12);
+      }
+
+      .badge-pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 4px 12px;
+        border-radius: 9999px;
+        font-size: 0.75rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        background: rgba(255, 255, 255, 0.2);
+        backdrop-filter: blur(8px);
+        color: #ffffff;
+      }
+
+      /* Navigation Tabs */
+      .nav-toolbar {
+        background: #ffffff;
+        border-bottom: 1px solid #e2e8f0;
+        padding: 8px 32px;
+        display: flex;
+        gap: 8px;
+        position: sticky;
+        top: 0;
+        z-index: 50;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+      }
+
+      .nav-tab {
+        padding: 8px 18px;
+        border-radius: 8px;
+        border: 1px solid transparent;
+        background: transparent;
+        font-weight: 600;
+        font-size: 0.88rem;
+        color: #475569;
+        cursor: pointer;
+        transition: all 0.2s;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .nav-tab:hover {
+        background: #f1f5f9;
+        color: #0f172a;
+      }
+
+      .nav-tab.active {
+        background: #0176d3;
+        color: #ffffff;
+        border-color: #0176d3;
+      }
+
+      /* Content Area */
+      .demo-content {
+        max-width: 1360px;
+        margin: 28px auto;
+        padding: 0 24px;
+      }
+
+      .demo-section {
+        display: none;
+      }
+
+      .demo-section.active {
+        display: block;
+        animation: fadeIn 0.3s ease-in-out;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(6px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      /* Metric Cards */
+      .metric-kpi-card {
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-radius: 12px;
+        padding: 20px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        transition:
+          transform 0.2s,
+          box-shadow 0.2s;
+      }
+
+      .metric-kpi-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+      }
+
+      .kpi-title {
+        font-size: 0.8rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+        color: #64748b;
+      }
+
+      .kpi-value {
+        font-size: 2rem;
+        font-weight: 800;
+        margin: 6px 0;
+      }
+
+      /* LWC Frame Simulation */
+      .lwc-card-frame {
+        background: #ffffff;
+        border: 1px solid #d8dde6;
+        border-radius: 10px;
+        box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+        overflow: hidden;
+      }
+
+      .lwc-card-header {
+        background: #f3f3f3;
+        border-bottom: 1px solid #d8dde6;
+        padding: 12px 18px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      /* AI Chat Styles */
+      .chat-viewport {
+        height: 480px;
+        overflow-y: auto;
+        background: #f8fafc;
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+      }
+
+      .chat-bubble {
+        max-width: 80%;
+        padding: 12px 16px;
+        border-radius: 12px;
+        font-size: 0.9rem;
+        line-height: 1.5;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06);
+      }
+
+      .chat-user {
+        align-self: flex-end;
+        background: #0176d3;
+        color: #ffffff;
+        border-bottom-right-radius: 2px;
+      }
+
+      .chat-ai {
+        align-self: flex-start;
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        color: #1e293b;
+        border-bottom-left-radius: 2px;
+      }
+
+      .chat-chip {
+        background: #ffffff;
+        border: 1px solid #cbd5e1;
+        padding: 6px 14px;
+        border-radius: 9999px;
+        font-size: 0.8rem;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.15s;
+      }
+
+      .chat-chip:hover {
+        background: #f1f5f9;
+        border-color: #0176d3;
+        color: #0176d3;
+      }
+
+      /* Terminal */
+      .terminal-view {
+        background: #0b132b;
+        color: #e2e8f0;
+        font-family: var(--font-mono);
+        border-radius: 10px;
+        padding: 16px;
+        font-size: 0.82rem;
+        overflow-x: auto;
+        max-height: 360px;
+        box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.5);
+      }
+
+      .log-entry {
+        margin-bottom: 6px;
+        line-height: 1.4;
+      }
+      .log-time {
+        color: #64748b;
+      }
+      .log-tag {
+        color: #00a1e0;
+        font-weight: bold;
+      }
+      .log-success {
+        color: #2e844a;
+      }
+      .log-warn {
+        color: #fe9339;
+      }
+      .log-crit {
+        color: #ea001e;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Top Header -->
+    <header class="app-header">
+      <div class="slds-grid slds-grid_vertical-align-center slds-grid_align-spread">
+        <div>
+          <div class="slds-grid slds-grid_vertical-align-center slds-m-bottom_xx-small">
+            <h1 class="slds-text-heading_medium slds-m-right_medium" style="font-weight: 800; letter-spacing: -0.02em">
+              ⚡ Shopify AI Forecast &amp; Inventory Intelligence Bridge
+            </h1>
+            <span class="badge-pill">2GP RELEASED v0.1.0</span>
+            <span class="badge-pill slds-m-left_x-small" style="background: rgba(0, 128, 96, 0.4)"
+              >OPEN-SOURCE MIT</span
+            >
+          </div>
+          <p class="slds-text-body_regular" style="color: #e2e8f0; max-width: 900px">
+            Connecting deterministic Shopify demand forecasting with Salesforce CRM. Real-time stockout warnings,
+            grounded conversational AI, automated procurement tasks, and wholesale deal protection.
+          </p>
+        </div>
+        <div>
+          <a
+            href="https://github.com/arsalan-arshad/shopify-ai-forecast-bridge"
+            target="_blank"
+            class="slds-button slds-button_outline-brand"
+            style="color: #ffffff; border-color: rgba(255, 255, 255, 0.5); border-radius: 8px"
+          >
+            GitHub Repository
+          </a>
+        </div>
+      </div>
+    </header>
+
+    <!-- Navigation Tabs -->
+    <nav class="nav-toolbar">
+      <button class="nav-tab active" onclick="switchTab('dashboard')"><span>📊</span> Executive Dashboard</button>
+      <button class="nav-tab" onclick="switchTab('lwc-demo')"><span>🧩</span> Forecast Intelligence LWC</button>
+      <button class="nav-tab" onclick="switchTab('ai-chat')"><span>🤖</span> Grounded AI Assistant</button>
+      <button class="nav-tab" onclick="switchTab('webhook-sim')"><span>⚡</span> Stockout Webhook Simulator</button>
+      <button class="nav-tab" onclick="switchTab('deal-protection')"><span>🛡️</span> B2B Deal Protection</button>
+      <button class="nav-tab" onclick="switchTab('architecture')"><span>🏛️</span> Architecture &amp; Logs</button>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="demo-content">
+      <!-- SECTION 1: EXECUTIVE DASHBOARD -->
+      <section id="dashboard" class="demo-section active">
+        <div class="slds-m-bottom_medium slds-grid slds-grid_align-spread slds-grid_vertical-align-center">
+          <div>
+            <h2 class="slds-text-heading_small slds-text-title_bold">Real-Time Inventory Telemetry Overview</h2>
+            <p class="slds-text-body_small slds-text-color_weak">
+              Data aggregated across Shopify locations and synced deterministically into Salesforce CRM.
+            </p>
+          </div>
+          <button class="slds-button slds-button_neutral" onclick="refreshDashboardData()">Refresh Metrics</button>
+        </div>
+
+        <div class="slds-grid slds-wrap slds-gutters slds-m-bottom_large">
+          <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-5">
+            <div class="metric-kpi-card">
+              <span class="kpi-title">Catalog SKUs Monitored</span>
+              <div class="kpi-value text-default" id="kpi-total">148</div>
+              <p class="slds-text-body_small slds-text-color_weak">Across 3 fulfillment hubs</p>
+            </div>
+          </div>
+          <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-5">
+            <div class="metric-kpi-card" style="border-left: 4px solid var(--critical-red)">
+              <span class="kpi-title">Critical Stockout Risk</span>
+              <div class="kpi-value" style="color: var(--critical-red)" id="kpi-critical">1</div>
+              <p class="slds-text-body_small slds-text-color_weak">Days of Cover &le; Lead Time</p>
+            </div>
+          </div>
+          <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-5">
+            <div class="metric-kpi-card" style="border-left: 4px solid var(--warning-amber)">
+              <span class="kpi-title">Reorder Approaching</span>
+              <div class="kpi-value" style="color: var(--warning-amber)" id="kpi-reorder">1</div>
+              <p class="slds-text-body_small slds-text-color_weak">Days of Cover &le; 1.5x Lead Time</p>
+            </div>
+          </div>
+          <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-5">
+            <div class="metric-kpi-card" style="border-left: 4px solid var(--healthy-green)">
+              <span class="kpi-title">Healthy Inventory</span>
+              <div class="kpi-value" style="color: var(--healthy-green)" id="kpi-healthy">146</div>
+              <p class="slds-text-body_small slds-text-color_weak">&gt; 30+ days buffer</p>
+            </div>
+          </div>
+          <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-5">
+            <div class="metric-kpi-card" style="background: #f0fdf4; border-color: #bbf7d0">
+              <span class="kpi-title">Recommended Reorders</span>
+              <div class="kpi-value" style="color: var(--healthy-green)" id="kpi-units">330</div>
+              <p class="slds-text-body_small slds-text-color_weak">Total replenishment units</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Inventory Status Table -->
+        <div class="lwc-card-frame">
+          <div class="lwc-card-header">
+            <h3 class="slds-text-title_bold slds-text-heading_small">Live Monitored Product Snapshots</h3>
+            <span class="slds-badge slds-theme_success">Sync Status: Active</span>
+          </div>
+          <table class="slds-table slds-table_cell-buffer slds-table_bordered">
+            <thead>
+              <tr class="slds-line-height_reset">
+                <th scope="col"><div class="slds-truncate" title="SKU">SKU</div></th>
+                <th scope="col"><div class="slds-truncate" title="Product Title">Product Title</div></th>
+                <th scope="col"><div class="slds-truncate" title="Location">Location</div></th>
+                <th scope="col"><div class="slds-truncate" title="On Hand">On Hand / Res.</div></th>
+                <th scope="col"><div class="slds-truncate" title="Daily WMA">Velocity (WMA)</div></th>
+                <th scope="col"><div class="slds-truncate" title="Cover">Days of Cover</div></th>
+                <th scope="col"><div class="slds-truncate" title="Health">Status</div></th>
+                <th scope="col"><div class="slds-truncate" title="Supplier">Supplier</div></th>
+                <th scope="col"><div class="slds-truncate" title="Action">Action</div></th>
+              </tr>
+            </thead>
+            <tbody id="inventory-table-body">
+              <!-- Rendered via JS -->
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- SECTION 2: FORECAST INTELLIGENCE LWC SIMULATOR -->
+      <section id="lwc-demo" class="demo-section">
+        <div class="slds-m-bottom_medium slds-grid slds-grid_align-spread slds-grid_vertical-align-center">
+          <div>
+            <h2 class="slds-text-heading_small slds-text-title_bold">
+              Lightning Web Component: <code>shopifyForecastIntelligence</code>
+            </h2>
+            <p class="slds-text-body_small slds-text-color_weak">
+              Simulates how the component renders when embedded on Salesforce Product2 or Opportunity record pages.
+            </p>
+          </div>
+          <div class="slds-grid slds-grid_vertical-align-center slds-gutters_small">
+            <span class="slds-text-body_small slds-m-right_x-small">Select Context SKU:</span>
+            <button class="slds-button slds-button_neutral" onclick="selectSkuContext('SKU-AIR-01')">
+              🔴 Critical (SKU-AIR-01)
+            </button>
+            <button class="slds-button slds-button_neutral" onclick="selectSkuContext('SKU-VALVE-04')">
+              🟡 Reorder (SKU-VALVE-04)
+            </button>
+            <button class="slds-button slds-button_neutral" onclick="selectSkuContext('SKU-HOSE-10')">
+              🟢 Healthy (SKU-HOSE-10)
+            </button>
+          </div>
+        </div>
+
+        <div class="lwc-card-frame" style="max-width: 900px; margin: 0 auto">
+          <div class="lwc-card-header">
+            <div class="slds-grid slds-grid_vertical-align-center">
+              <span class="slds-icon_container slds-icon-standard-product slds-m-right_small">
+                <span style="font-size: 1.25rem">📦</span>
+              </span>
+              <div>
+                <h3 class="slds-text-title_bold">Shopify Forecast &amp; Inventory Intelligence</h3>
+                <p class="slds-text-body_small slds-text-color_weak">
+                  Lightning Component &bull; Standard Page Placement
+                </p>
+              </div>
+            </div>
+            <div>
+              <button class="slds-button slds-button_brand" onclick="openReorderModal()">Draft Purchase Order</button>
+            </div>
+          </div>
+
+          <div class="slds-p-around_medium" id="lwc-component-body">
+            <!-- Dynamic Content Injected by JS -->
+          </div>
+        </div>
+      </section>
+
+      <!-- SECTION 3: GROUNDED AI CHAT ASSISTANT -->
+      <section id="ai-chat" class="demo-section">
+        <div class="slds-m-bottom_medium">
+          <h2 class="slds-text-heading_small slds-text-title_bold">
+            Conversational AI Inventory Assistant: <code>shopifyForecastChat</code>
+          </h2>
+          <p class="slds-text-body_small slds-text-color_weak">
+            Ask natural language inventory and restock questions. All responses are strictly grounded in deterministic
+            numbers to eliminate hallucination.
+          </p>
+        </div>
+
+        <div class="lwc-card-frame" style="max-width: 960px; margin: 0 auto">
+          <div class="lwc-card-header">
+            <div class="slds-grid slds-grid_vertical-align-center">
+              <span style="font-size: 1.5rem; margin-right: 8px">🤖</span>
+              <div>
+                <h3 class="slds-text-title_bold">Shopify Forecast AI Agent</h3>
+                <span class="slds-badge slds-theme_success" style="font-size: 0.7rem">
+                  ● Zero-Hallucination Grounding Active
+                </span>
+              </div>
+            </div>
+            <button class="slds-button slds-button_neutral slds-button_small" onclick="clearChat()">
+              Clear History
+            </button>
+          </div>
+
+          <!-- Suggested Chips -->
+          <div class="slds-p-around_small slds-border_bottom" style="background: #ffffff">
+            <span class="slds-text-body_small slds-text-color_weak slds-m-right_x-small">Suggested Inquiries:</span>
+            <div class="slds-grid slds-wrap" style="gap: 8px; display: inline-flex">
+              <button class="chat-chip" onclick="askAi('Which products will run out before Black Friday?')">
+                Which products will run out before Black Friday?
+              </button>
+              <button class="chat-chip" onclick="askAi('Tell me about SKU-AIR-01')">Forecast for SKU-AIR-01</button>
+              <button class="chat-chip" onclick="askAi('Summarize stockouts by supplier')">
+                Summarize by Supplier
+              </button>
+              <button class="chat-chip" onclick="askAi('What is our overall inventory health?')">Overall Health</button>
+            </div>
+          </div>
+
+          <!-- Message Viewport -->
+          <div class="chat-viewport" id="chat-viewport">
+            <div class="chat-bubble chat-ai">
+              <strong>Shopify Inventory AI:</strong><br />
+              👋 Hello! I am your deterministic inventory forecasting assistant. Ask me anything about current stockout
+              risks, recommended reorder quantities, or supplier fulfillment windows!
+            </div>
+          </div>
+
+          <!-- Input Toolbar -->
+          <div class="slds-p-around_small slds-border_top" style="background: #ffffff">
+            <div class="slds-grid slds-gutters_x-small">
+              <div class="slds-col slds-grow">
+                <input
+                  type="text"
+                  id="chat-input"
+                  class="slds-input"
+                  placeholder="Ask an inventory question (e.g. 'How many units of SKU-AIR-01 should we order?')..."
+                  onkeyup="handleChatKey(event)"
+                />
+              </div>
+              <div class="slds-col slds-no-flex">
+                <button class="slds-button slds-button_brand" onclick="sendChatFromInput()">Send Query</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- SECTION 4: WEBHOOK SIMULATOR -->
+      <section id="webhook-sim" class="demo-section">
+        <div class="slds-m-bottom_medium">
+          <h2 class="slds-text-heading_small slds-text-title_bold">Inbound Stockout Webhook Receiver Simulator</h2>
+          <p class="slds-text-body_small slds-text-color_weak">
+            Simulates dispatch from <code>shopify-ai-forecast-app</code> to the Apex REST endpoint
+            <code>/services/apexrest/shopify/v1/forecast-alert/</code>.
+          </p>
+        </div>
+
+        <div class="slds-grid slds-wrap slds-gutters">
+          <!-- Left: Payload Config -->
+          <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2">
+            <div class="lwc-card-frame slds-p-around_medium">
+              <h3 class="slds-text-title_bold slds-m-bottom_small">JSON Payload Dispatcher</h3>
+              <div class="slds-form slds-form_stacked slds-m-bottom_medium">
+                <div class="slds-form-element">
+                  <label class="slds-form-element__label">Target SKU</label>
+                  <input type="text" id="wh-sku" class="slds-input" value="SKU-AIR-01" />
+                </div>
+                <div class="slds-grid slds-gutters">
+                  <div class="slds-col slds-size_1-of-2">
+                    <label class="slds-form-element__label">Quantity On Hand</label>
+                    <input type="number" id="wh-onhand" class="slds-input" value="35" />
+                  </div>
+                  <div class="slds-col slds-size_1-of-2">
+                    <label class="slds-form-element__label">Quantity Reserved</label>
+                    <input type="number" id="wh-reserved" class="slds-input" value="10" />
+                  </div>
+                </div>
+                <div class="slds-grid slds-gutters slds-m-top_x-small">
+                  <div class="slds-col slds-size_1-of-2">
+                    <label class="slds-form-element__label">Daily Velocity (WMA)</label>
+                    <input type="number" id="wh-velocity" step="0.1" class="slds-input" value="5.0" />
+                  </div>
+                  <div class="slds-col slds-size_1-of-2">
+                    <label class="slds-form-element__label">Supplier Lead Time (Days)</label>
+                    <input type="number" id="wh-leadtime" class="slds-input" value="14" />
+                  </div>
+                </div>
+              </div>
+
+              <button class="slds-button slds-button_brand slds-button_stretch" onclick="dispatchWebhookSimulation()">
+                ⚡ Sign HMAC &amp; Dispatch Webhook
+              </button>
+            </div>
+          </div>
+
+          <!-- Right: Execution Result -->
+          <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2">
+            <div class="lwc-card-frame slds-p-around_medium">
+              <h3 class="slds-text-title_bold slds-m-bottom_small">Salesforce Apex REST Execution Trace</h3>
+              <div id="webhook-result" class="terminal-view" style="height: 290px">
+                <div class="log-entry">
+                  <span class="log-time">[STANDBY]</span> Ready to receive webhook events from
+                  shopify-ai-forecast-app...
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- SECTION 5: B2B DEAL PROTECTION -->
+      <section id="deal-protection" class="demo-section">
+        <div class="slds-m-bottom_medium">
+          <h2 class="slds-text-heading_small slds-text-title_bold">
+            B2B Deal Protection &amp; Stock Availability Validator
+          </h2>
+          <p class="slds-text-body_small slds-text-color_weak">
+            Prevents wholesale sales reps from closing Opportunities with stock commitments that are already depleted on
+            the storefront.
+          </p>
+        </div>
+
+        <div class="lwc-card-frame slds-p-around_large" style="max-width: 900px; margin: 0 auto">
+          <div class="slds-grid slds-grid_vertical-align-center slds-m-bottom_medium">
+            <span style="font-size: 1.5rem; margin-right: 12px">🛡️</span>
+            <div>
+              <h3 class="slds-text-heading_small slds-text-title_bold">Opportunity Line Item Stock Check</h3>
+              <p class="slds-text-body_small slds-text-color_weak">
+                Simulates ValidateOpportunityStock invocable action
+              </p>
+            </div>
+          </div>
+
+          <div class="slds-form slds-form_stacked slds-m-bottom_large">
+            <div class="slds-form-element">
+              <label class="slds-form-element__label">Opportunity Context</label>
+              <input type="text" class="slds-input" value="Q4 Enterprise Supply Deal - Acme Corp ($45,000)" disabled />
+            </div>
+            <div class="slds-grid slds-gutters">
+              <div class="slds-col slds-size_1-of-2">
+                <label class="slds-form-element__label">Product Selection</label>
+                <select id="deal-sku" class="slds-select" onchange="runDealStockCheck()">
+                  <option value="SKU-AIR-01">SKU-AIR-01 (Industrial Carbon Air Filter) - CRITICAL RISK</option>
+                  <option value="SKU-VALVE-04">SKU-VALVE-04 (Brass Pressure Relief Valve) - REORDER SOON</option>
+                  <option value="SKU-HOSE-10">SKU-HOSE-10 (Reinforced Hydraulic Hose) - HEALTHY</option>
+                </select>
+              </div>
+              <div class="slds-col slds-size_1-of-2">
+                <label class="slds-form-element__label">Requested Wholesale Quantity (Units)</label>
+                <input type="number" id="deal-qty" class="slds-input" value="40" oninput="runDealStockCheck()" />
+              </div>
+            </div>
+          </div>
+
+          <!-- Dynamic Result Box -->
+          <div id="deal-validation-result">
+            <!-- Injected by JS -->
+          </div>
+        </div>
+      </section>
+
+      <!-- SECTION 6: ARCHITECTURE & EVENT STREAM -->
+      <section id="architecture" class="demo-section">
+        <div class="slds-m-bottom_medium">
+          <h2 class="slds-text-heading_small slds-text-title_bold">Bridge Architecture &amp; Live System Logs</h2>
+          <p class="slds-text-body_small slds-text-color_weak">
+            Review the synchronization pipeline, security parameters, and live event audit trail.
+          </p>
+        </div>
+
+        <div class="slds-grid slds-wrap slds-gutters">
+          <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2">
+            <div class="lwc-card-frame slds-p-around_medium">
+              <h3 class="slds-text-title_bold slds-m-bottom_small">Architecture Overview</h3>
+              <div class="slds-box slds-box_x-small slds-m-bottom_small" style="background: #f8fafc">
+                <p class="slds-text-body_small">
+                  <strong>Shopify Ecosystem:</strong> <code>shopify-ai-forecast-app</code> calculates Weighted Moving
+                  Average (WMA) daily velocities and days-of-cover.<br />
+                  <strong>Bridge Gateway:</strong> Node.js Express server validates cryptographic HMAC-SHA256
+                  signatures.<br />
+                  <strong>Salesforce CRM:</strong> Apex REST receiver upserts
+                  <code>Shopify_Inventory_Snapshot__c</code> and spawns urgent <code>Task</code> records when
+                  <code>days_of_cover &le; lead_time</code>.
+                </p>
+              </div>
+
+              <h4 class="slds-text-title_bold slds-m-top_medium slds-m-bottom_x-small">Package Artifacts</h4>
+              <ul class="slds-list_dotted slds-text-body_small">
+                <li><code>ShopifyForecastReceiver.cls</code> — Apex REST Webhook Receiver</li>
+                <li><code>ShopifyForecastService.cls</code> — Core Calculation &amp; Health Engine</li>
+                <li><code>ShopifyForecastController.cls</code> — LWC Data Access Layer</li>
+                <li><code>ShopifyAIChatService.cls</code> — Grounded Zero-Hallucination AI Engine</li>
+                <li><code>ValidateOpportunityStock.cls</code> — B2B Wholesale Deal Protection</li>
+                <li><code>shopifyForecastIntelligence</code> — Lightning Web Component Card</li>
+                <li><code>shopifyForecastChat</code> — Conversational Assistant Widget</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2">
+            <div class="lwc-card-frame slds-p-around_medium">
+              <div class="slds-grid slds-grid_align-spread slds-m-bottom_small">
+                <h3 class="slds-text-title_bold">Live Event Audit Trail</h3>
+                <button class="slds-button slds-button_neutral slds-button_small" onclick="clearEventLogs()">
+                  Clear Logs
+                </button>
+              </div>
+              <div class="terminal-view" id="system-event-logs" style="height: 380px">
+                <div class="log-entry">
+                  <span class="log-time">[SYSTEM]</span> Bridge initialized on v0.1.0 (2GP Package 04tg7000000YA1sAAG)
+                </div>
+                <div class="log-entry">
+                  <span class="log-time">[SYSTEM]</span> Connected to Salesforce org via JWT Bearer
+                </div>
+                <div class="log-entry">
+                  <span class="log-time">[CACHE]</span> 3 simulated SKU snapshots loaded into memory
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- Modal for PO Drafting Simulation -->
+    <div id="reorder-modal" class="slds-modal slds-fade-in-close" aria-hidden="true" role="dialog">
+      <div class="slds-modal__container">
+        <header class="slds-modal__header">
+          <button
+            class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse"
+            onclick="closeReorderModal()"
+          >
+            ✕
+          </button>
+          <h2 class="slds-modal__title">Draft Purchase Order</h2>
+        </header>
+        <div class="slds-modal__content slds-p-around_medium">
+          <div class="slds-form slds-form_stacked">
+            <div class="slds-form-element">
+              <label class="slds-form-element__label">SKU</label>
+              <input type="text" id="modal-sku" class="slds-input" disabled />
+            </div>
+            <div class="slds-form-element">
+              <label class="slds-form-element__label">Supplier</label>
+              <input type="text" id="modal-supplier" class="slds-input" disabled />
+            </div>
+            <div class="slds-form-element">
+              <label class="slds-form-element__label">Order Quantity (Units)</label>
+              <input type="number" id="modal-qty" class="slds-input" />
+            </div>
+          </div>
+        </div>
+        <footer class="slds-modal__footer">
+          <button class="slds-button slds-button_neutral" onclick="closeReorderModal()">Cancel</button>
+          <button class="slds-button slds-button_brand" onclick="confirmDraftPO()">Confirm &amp; Draft PO</button>
+        </footer>
+      </div>
+    </div>
+    <div id="modal-backdrop" class="slds-backdrop slds-backdrop_close"></div>
+
+    <!-- JavaScript Logic -->
+    <script>
+      // State
+      const inventorySnapshots = [
+        {
+          sku: 'SKU-AIR-01',
+          productTitle: 'Industrial Carbon Air Filter',
+          locationName: 'North Warehouse',
+          quantityOnHand: 45,
+          quantityReserved: 10,
+          dailyVelocityWMA: 4.5,
+          daysOfCover: 7.7,
+          leadTimeDays: 14,
+          reorderPoint: 77,
+          recommendedReorderQty: 150,
+          stockoutRiskLevel: 'CRITICAL',
+          supplierName: 'Apex Filtration Co',
+          lastForecastDate: new Date().toISOString()
+        },
+        {
+          sku: 'SKU-VALVE-04',
+          productTitle: 'Brass Pressure Relief Valve',
+          locationName: 'East Distribution Hub',
+          quantityOnHand: 90,
+          quantityReserved: 15,
+          dailyVelocityWMA: 4.2,
+          daysOfCover: 17.8,
+          leadTimeDays: 14,
+          reorderPoint: 72,
+          recommendedReorderQty: 100,
+          stockoutRiskLevel: 'REORDER_SOON',
+          supplierName: 'FluidFlow Dynamics',
+          lastForecastDate: new Date().toISOString()
+        },
+        {
+          sku: 'SKU-HOSE-10',
+          productTitle: 'Reinforced Hydraulic Hose 50ft',
+          locationName: 'North Warehouse',
+          quantityOnHand: 320,
+          quantityReserved: 20,
+          dailyVelocityWMA: 3.1,
+          daysOfCover: 96.7,
+          leadTimeDays: 14,
+          reorderPoint: 53,
+          recommendedReorderQty: 80,
+          stockoutRiskLevel: 'HEALTHY',
+          supplierName: 'Apex Filtration Co',
+          lastForecastDate: new Date().toISOString()
+        }
+      ];
+
+      let currentSelectedSku = 'SKU-AIR-01';
+
+      // Tab switcher
+      function switchTab(tabId) {
+        document.querySelectorAll('.nav-tab').forEach((t) => t.classList.remove('active'));
+        document.querySelectorAll('.demo-section').forEach((s) => s.classList.remove('active'));
+
+        event.currentTarget.classList.add('active');
+        document.getElementById(tabId).classList.add('active');
+
+        if (tabId === 'lwc-demo') {
+          renderLwcComponent(currentSelectedSku);
+        } else if (tabId === 'deal-protection') {
+          runDealStockCheck();
+        }
+      }
+
+      // Log helper
+      function addLog(elementId, type, msg) {
+        const el = document.getElementById(elementId);
+        if (!el) return;
+        const time = new Date().toLocaleTimeString();
+        const typeClass =
+          type === 'CRITICAL'
+            ? 'log-crit'
+            : type === 'WARN'
+              ? 'log-warn'
+              : type === 'SUCCESS'
+                ? 'log-success'
+                : 'log-tag';
+
+        const row = document.createElement('div');
+        row.className = 'log-entry';
+        row.innerHTML = `<span class="log-time">[${time}]</span> <span class="${typeClass}">[${type}]</span> ${msg}`;
+        el.appendChild(row);
+        el.scrollTop = el.scrollHeight;
+      }
+
+      // Dashboard Render
+      function renderDashboardTable() {
+        const tbody = document.getElementById('inventory-table-body');
+        if (!tbody) return;
+
+        tbody.innerHTML = inventorySnapshots
+          .map((s) => {
+            const avail = s.quantityOnHand - s.quantityReserved;
+            const badgeClass =
+              s.stockoutRiskLevel === 'CRITICAL'
+                ? 'slds-theme_error'
+                : s.stockoutRiskLevel === 'REORDER_SOON'
+                  ? 'slds-theme_warning'
+                  : 'slds-theme_success';
+
+            return `
+            <tr>
+              <td><strong><code>${s.sku}</code></strong></td>
+              <td>${s.productTitle}</td>
+              <td>${s.locationName}</td>
+              <td><strong>${avail}</strong> <span class="slds-text-color_weak">(${s.quantityOnHand} / ${s.quantityReserved})</span></td>
+              <td>${s.dailyVelocityWMA} / day</td>
+              <td><strong>${s.daysOfCover}d</strong></td>
+              <td><span class="slds-badge ${badgeClass}">${s.stockoutRiskLevel}</span></td>
+              <td>${s.supplierName}</td>
+              <td>
+                <button class="slds-button slds-button_neutral slds-button_small" onclick="quickReorder('${s.sku}')">Reorder</button>
+              </td>
+            </tr>
+          `;
+          })
+          .join('');
+      }
+
+      function refreshDashboardData() {
+        renderDashboardTable();
+        addLog('system-event-logs', 'INFO', 'Manual telemetry dashboard refresh requested');
+      }
+
+      // LWC Component Simulator
+      function selectSkuContext(sku) {
+        currentSelectedSku = sku;
+        renderLwcComponent(sku);
+      }
+
+      function renderLwcComponent(sku) {
+        const snap = inventorySnapshots.find((s) => s.sku === sku) || inventorySnapshots[0];
+        const container = document.getElementById('lwc-component-body');
+        const available = snap.quantityOnHand - snap.quantityReserved;
+
+        const badgeColor =
+          snap.stockoutRiskLevel === 'CRITICAL'
+            ? '#ea001e'
+            : snap.stockoutRiskLevel === 'REORDER_SOON'
+              ? '#fe9339'
+              : '#2e844a';
+
+        container.innerHTML = `
+          <div class="slds-box slds-box_x-small slds-m-bottom_medium" style="border-left: 4px solid ${badgeColor}; background: #f8fafc">
+            <div class="slds-grid slds-grid_vertical-align-center slds-grid_align-spread">
+              <div class="slds-grid slds-grid_vertical-align-center">
+                <span class="slds-badge" style="background: ${badgeColor}; color: #fff; font-weight: 700">${snap.stockoutRiskLevel}</span>
+                <div class="slds-m-left_small">
+                  <h4 class="slds-text-heading_small slds-text-title_bold">${snap.productTitle}</h4>
+                  <p class="slds-text-body_small slds-text-color_weak">SKU: <code>${snap.sku}</code> &bull; Location: ${snap.locationName}</p>
+                </div>
+              </div>
+              <div class="slds-text-align_right">
+                <span style="font-size: 1.8rem; font-weight: 800">${snap.daysOfCover}</span>
+                <span class="slds-text-title_bold slds-m-left_xx-small">Days of Cover</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="slds-grid slds-wrap slds-gutters slds-m-bottom_small">
+            <div class="slds-col slds-size_1-of-4">
+              <div class="metric-kpi-card slds-text-align_center">
+                <p class="kpi-title">Available Stock</p>
+                <div class="kpi-value">${available}</div>
+                <p class="slds-text-body_small slds-text-color_weak">${snap.quantityOnHand} on hand (${snap.quantityReserved} res.)</p>
+              </div>
+            </div>
+            <div class="slds-col slds-size_1-of-4">
+              <div class="metric-kpi-card slds-text-align_center">
+                <p class="kpi-title">Daily Velocity</p>
+                <div class="kpi-value" style="color: #0176d3">${snap.dailyVelocityWMA}</div>
+                <p class="slds-text-body_small slds-text-color_weak">WMA consumption / day</p>
+              </div>
+            </div>
+            <div class="slds-col slds-size_1-of-4">
+              <div class="metric-kpi-card slds-text-align_center">
+                <p class="kpi-title">Reorder Point</p>
+                <div class="kpi-value">${snap.reorderPoint}</div>
+                <p class="slds-text-body_small slds-text-color_weak">${snap.leadTimeDays}d supplier lead time</p>
+              </div>
+            </div>
+            <div class="slds-col slds-size_1-of-4">
+              <div class="metric-kpi-card slds-text-align_center" style="background: #f0fdf4; border-color: #bbf7d0">
+                <p class="kpi-title">Recommended</p>
+                <div class="kpi-value" style="color: #16a34a">${snap.recommendedReorderQty}</div>
+                <p class="slds-text-body_small slds-text-color_weak">suggested order units</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="slds-grid slds-grid_align-spread slds-text-body_small slds-text-color_weak slds-border_top slds-p-top_small">
+            <span>Supplier: <strong>${snap.supplierName}</strong></span>
+            <span>Last Synced: <strong>${new Date(snap.lastForecastDate).toLocaleTimeString()}</strong></span>
+          </div>
+        `;
+      }
+
+      // Reorder Modal Actions
+      function openReorderModal() {
+        const snap = inventorySnapshots.find((s) => s.sku === currentSelectedSku);
+        if (!snap) return;
+
+        document.getElementById('modal-sku').value = snap.sku;
+        document.getElementById('modal-supplier').value = snap.supplierName;
+        document.getElementById('modal-qty').value = snap.recommendedReorderQty;
+
+        document.getElementById('reorder-modal').classList.remove('slds-fade-in-close');
+        document.getElementById('reorder-modal').classList.add('slds-fade-in-open');
+        document.getElementById('modal-backdrop').classList.remove('slds-backdrop_close');
+        document.getElementById('modal-backdrop').classList.add('slds-backdrop_open');
+      }
+
+      function closeReorderModal() {
+        document.getElementById('reorder-modal').classList.remove('slds-fade-in-open');
+        document.getElementById('reorder-modal').classList.add('slds-fade-in-close');
+        document.getElementById('modal-backdrop').classList.remove('slds-backdrop_open');
+        document.getElementById('modal-backdrop').classList.add('slds-backdrop_close');
+      }
+
+      function confirmDraftPO() {
+        const sku = document.getElementById('modal-sku').value;
+        const qty = document.getElementById('modal-qty').value;
+        const poNum =
+          'PO-' +
+          new Date().toISOString().slice(0, 10).replace(/-/g, '') +
+          '-' +
+          Math.floor(1000 + Math.random() * 9000);
+
+        closeReorderModal();
+
+        alert(`✅ Success: Created Draft Purchase Order ${poNum} for ${qty} units of ${sku}.`);
+        addLog('system-event-logs', 'SUCCESS', `Purchase Order ${poNum} drafted for ${sku} (${qty} units)`);
+      }
+
+      function quickReorder(sku) {
+        currentSelectedSku = sku;
+        openReorderModal();
+      }
+
+      // AI Chat Simulation
+      function handleChatKey(e) {
+        if (e.key === 'Enter') {
+          sendChatFromInput();
+        }
+      }
+
+      function sendChatFromInput() {
+        const input = document.getElementById('chat-input');
+        const text = input.value.trim();
+        if (!text) return;
+        input.value = '';
+        askAi(text);
+      }
+
+      function askAi(promptText) {
+        const viewport = document.getElementById('chat-viewport');
+
+        // User bubble
+        const userDiv = document.createElement('div');
+        userDiv.className = 'chat-bubble chat-user';
+        userDiv.textContent = promptText;
+        viewport.appendChild(userDiv);
+
+        // Simulated AI response
+        setTimeout(() => {
+          const aiDiv = document.createElement('div');
+          aiDiv.className = 'chat-bubble chat-ai';
+
+          let reply = '';
+          const lower = promptText.toLowerCase();
+
+          if (lower.includes('run out') || lower.includes('black friday') || lower.includes('critical')) {
+            reply = `
+              <strong>Shopify Inventory AI (Grounded):</strong><br/>
+              ⚠️ <strong>Critical Stockout Alert Detected:</strong><br/>
+              Based on live Weighted Moving Average (WMA) velocity and supplier fulfillment cycles, <strong>1 SKU</strong> is at immediate risk of depletion:<br/><br/>
+              • <code>SKU-AIR-01</code> (Industrial Carbon Air Filter)<br/>
+              &nbsp;&nbsp;- <strong>Days of Cover:</strong> 7.7 days remaining<br/>
+              &nbsp;&nbsp;- <strong>Supplier Lead Time:</strong> 14 days<br/>
+              &nbsp;&nbsp;- <strong>Recommended Reorder:</strong> 150 units from <em>Apex Filtration Co</em><br/><br/>
+              💡 <em>Action Required:</em> Place replenishment order immediately to avoid stockout before delivery window.
+            `;
+          } else if (lower.includes('sku-air-01') || lower.includes('air filter')) {
+            reply = `
+              <strong>Shopify Inventory AI (Grounded):</strong><br/>
+              📦 <strong>Snapshot for SKU-AIR-01:</strong><br/>
+              - <strong>Available:</strong> 35 units (45 on hand, 10 reserved)<br/>
+              - <strong>Daily Velocity:</strong> 4.5 units / day<br/>
+              - <strong>Days of Cover:</strong> 7.7 days<br/>
+              - <strong>Reorder Point:</strong> 77 units<br/>
+              - <strong>Recommended Restock:</strong> 150 units from Apex Filtration Co
+            `;
+          } else if (lower.includes('supplier') || lower.includes('vendor')) {
+            reply = `
+              <strong>Shopify Inventory AI (Grounded):</strong><br/>
+              🏭 <strong>Supplier Replenishment Summary:</strong><br/>
+              • <strong>Apex Filtration Co:</strong> 2 SKUs monitored | 230 total units recommended<br/>
+              • <strong>FluidFlow Dynamics:</strong> 1 SKU monitored | 100 units recommended
+            `;
+          } else {
+            reply = `
+              <strong>Shopify Inventory AI (Grounded):</strong><br/>
+              📊 <strong>Catalog Health Overview:</strong><br/>
+              - <strong>Total Monitored SKUs:</strong> 3<br/>
+              - <strong>🔴 Critical:</strong> 1 (SKU-AIR-01)<br/>
+              - <strong>🟡 Reorder Soon:</strong> 1 (SKU-VALVE-04)<br/>
+              - <strong>🟢 Healthy:</strong> 1 (SKU-HOSE-10)<br/>
+              - <strong>Total Recommended Units:</strong> 330 units
+            `;
+          }
+
+          aiDiv.innerHTML = reply;
+          viewport.appendChild(aiDiv);
+          viewport.scrollTop = viewport.scrollHeight;
+
+          addLog('system-event-logs', 'INFO', `AI Query Processed: "${promptText}"`);
+        }, 300);
+
+        viewport.scrollTop = viewport.scrollHeight;
+      }
+
+      function clearChat() {
+        document.getElementById('chat-viewport').innerHTML = `
+          <div class="chat-bubble chat-ai">
+            <strong>Shopify Inventory AI:</strong><br />
+            History cleared. Ask me any inventory, stockout, or replenishment question!
+          </div>
+        `;
+      }
+
+      // Webhook Simulator
+      function dispatchWebhookSimulation() {
+        const sku = document.getElementById('wh-sku').value;
+        const onHand = Number(document.getElementById('wh-onhand').value);
+        const reserved = Number(document.getElementById('wh-reserved').value);
+        const velocity = Number(document.getElementById('wh-velocity').value);
+        const leadTime = Number(document.getElementById('wh-leadtime').value);
+
+        const available = Math.max(0, onHand - reserved);
+        const daysOfCover = Math.round((available / velocity) * 10) / 10;
+        const isCritical = daysOfCover <= leadTime;
+
+        const resultBox = document.getElementById('webhook-result');
+
+        addLog('webhook-result', 'INFO', `Inbound POST /services/apexrest/shopify/v1/forecast-alert/`);
+        addLog('webhook-result', 'SUCCESS', `HMAC Signature Verified: SHA-256 match`);
+        addLog(
+          'webhook-result',
+          'INFO',
+          `Payload Parsed: SKU=${sku}, Avail=${available}, Velocity=${velocity}, Cover=${daysOfCover}d`
+        );
+
+        if (isCritical) {
+          addLog(
+            'webhook-result',
+            'CRITICAL',
+            `Stockout Risk Trigger: Days of Cover (${daysOfCover}d) <= Lead Time (${leadTime}d)`
+          );
+          addLog('webhook-result', 'SUCCESS', `Created Shopify_Procurement_Alert__c (ID: a0B5e000000XYZ1)`);
+          addLog(
+            'webhook-result',
+            'SUCCESS',
+            `Spawned Task: "⚠️ Urgent Stockout Alert: Restock ${sku}" (Priority: High)`
+          );
+        } else {
+          addLog('webhook-result', 'SUCCESS', `Updated Shopify_Inventory_Snapshot__c (Status: HEALTHY)`);
+        }
+
+        // Update in-memory snapshot
+        const item = inventorySnapshots.find((s) => s.sku === sku);
+        if (item) {
+          item.quantityOnHand = onHand;
+          item.quantityReserved = reserved;
+          item.dailyVelocityWMA = velocity;
+          item.daysOfCover = daysOfCover;
+          item.stockoutRiskLevel = isCritical ? 'CRITICAL' : 'HEALTHY';
+          renderDashboardTable();
+        }
+      }
+
+      // B2B Deal Protection
+      function runDealStockCheck() {
+        const sku = document.getElementById('deal-sku').value;
+        const requestedQty = Number(document.getElementById('deal-qty').value) || 0;
+        const resultContainer = document.getElementById('deal-validation-result');
+
+        const snap = inventorySnapshots.find((s) => s.sku === sku) || inventorySnapshots[0];
+        const available = snap.quantityOnHand - snap.quantityReserved;
+        const leadTime = snap.leadTimeDays || 14;
+        const restockDate = new Date();
+        restockDate.setDate(restockDate.getDate() + leadTime);
+
+        if (available < requestedQty) {
+          resultContainer.innerHTML = `
+            <div class="slds-notify slds-notify_alert slds-theme_error" role="alert" style="border-radius: 8px">
+              <span class="slds-assistive-text">error</span>
+              <div class="slds-notify__content">
+                <h2 class="slds-text-heading_small">❌ Commit Blocked: Stock Shortage</h2>
+                <p class="slds-m-top_xx-small">
+                  Sales rep requested <strong>${requestedQty} units</strong>, but only <strong>${available} unallocated units</strong> are available in Shopify.
+                  Next scheduled restock delivery is <strong>${restockDate.toLocaleDateString()}</strong>.
+                </p>
+              </div>
+            </div>
+          `;
+        } else if (snap.stockoutRiskLevel === 'CRITICAL') {
+          resultContainer.innerHTML = `
+            <div class="slds-notify slds-notify_alert slds-theme_warning" role="alert" style="border-radius: 8px">
+              <span class="slds-assistive-text">warning</span>
+              <div class="slds-notify__content">
+                <h2 class="slds-text-heading_small">⚠️ Warning: Imminent Storefront Depletion</h2>
+                <p class="slds-m-top_xx-small">
+                  Available inventory (${available} units) can physically fulfill this order, but storefront consumption velocity will deplete all remaining units in <strong>${snap.daysOfCover} days</strong> (less than supplier lead time of ${leadTime} days).
+                  Wholesale commitment requires Sales Manager approval.
+                </p>
+              </div>
+            </div>
+          `;
+        } else {
+          resultContainer.innerHTML = `
+            <div class="slds-notify slds-notify_alert slds-theme_success" role="alert" style="border-radius: 8px">
+              <span class="slds-assistive-text">success</span>
+              <div class="slds-notify__content">
+                <h2 class="slds-text-heading_small">✅ Approved: Inventory Verified</h2>
+                <p class="slds-m-top_xx-small">
+                  Sufficient stock available (${available} units). Current storefront buffer is healthy at <strong>${snap.daysOfCover} days of cover</strong>.
+                </p>
+              </div>
+            </div>
+          `;
+        }
+      }
+
+      function clearEventLogs() {
+        document.getElementById('system-event-logs').innerHTML = '';
+      }
+
+      // Initial Bootstrap
+      window.onload = function () {
+        renderDashboardTable();
+        renderLwcComponent(currentSelectedSku);
+        runDealStockCheck();
+      };
+    </script>
+  </body>
+</html>

@@ -1,18 +1,20 @@
 {
   "name": "shopify-ai-forecast-bridge",
   "version": "0.1.0",
-  "description": "Companion integration bridge connecting Shopify AI Forecast Agent with Salesforce CRM.",
+  "description": "Shopify AI Forecast & Inventory Intelligence Bridge - Open-source companion connecting Shopify demand forecasting with Salesforce CRM.",
   "type": "module",
   "scripts": {
     "dev": "node src/server.js",
     "start": "node src/server.js",
-    "test": "node --test"
+    "test": "node --test test/**/*.test.js",
+    "lint": "eslint src/**/*.js test/**/*.js",
+    "prettier": "prettier --write \"**/*.{js,json,md,html}\"",
+    "prettier:check": "prettier --check \"**/*.{js,json,md,html}\""
   },
   "dependencies": {
-    "@salesforce/core": "^8.0.0",
     "dotenv": "^16.4.5",
     "express": "^4.21.0",
-    "jsforce": "^2.0.0"
+    "jsforce": "^1.11.1"
   },
   "devDependencies": {
     "eslint": "^8.57.0",

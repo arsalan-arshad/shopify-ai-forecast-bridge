@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Alert_Type__c</fullName>
+    <description>Classification of the procurement trigger.</description>
+    <externalId>false</externalId>
+    <label>Alert Type</label>
+    <required>false</required>
+    <trackHistory>true</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>STOCKOUT_IMMINENT</fullName>
+                <default>true</default>
+                <label>STOCKOUT_IMMINENT</label>
+            </value>
+            <value>
+                <fullName>BELOW_SAFETY_STOCK</fullName>
+                <default>false</default>
+                <label>BELOW_SAFETY_STOCK</label>
+            </value>
+            <value>
+                <fullName>LEAD_TIME_EXCEEDED</fullName>
+                <default>false</default>
+                <label>LEAD_TIME_EXCEEDED</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

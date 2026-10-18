@@ -1,0 +1,203 @@
+<template>
+  <lightning-card title="Shopify Forecast &amp; Inventory Intelligence" icon-name="custom:custom62">
+    <!-- Header Actions -->
+    <div slot="actions">
+      <lightning-button-group>
+        <lightning-button
+          label="Draft PO"
+          icon-name="utility:new"
+          variant="brand"
+          onclick="
+            {
+              handleOpenReorderModal;
+            }
+          "
+          disabled="{isActionDisabled}"
+        >
+        </lightning-button>
+        <lightning-button-icon
+          icon-name="utility:refresh"
+          alternative-text="Refresh Inventory Data"
+          onclick="
+            {
+              handleRefresh;
+            }
+          "
+        >
+        </lightning-button-icon>
+      </lightning-button-group>
+    </div>
+
+    <div class="slds-p-around_medium">
+      <!-- Loading State -->
+      <template if:true="{isLoading}">
+        <div class="slds-is-relative slds-p-around_x-large">
+          <lightning-spinner alternative-text="Loading forecast telemetry..." size="medium"></lightning-spinner>
+        </div>
+      </template>
+
+      <!-- Error State -->
+      <template if:true="{errorMessage}">
+        <div
+          class="slds-notify slds-notify_alert slds-theme_alert-texture slds-theme_error slds-m-bottom_medium"
+          role="alert"
+        >
+          <span class="slds-assistive-text">Error</span>
+          <h2>{errorMessage}</h2>
+        </div>
+      </template>
+
+      <!-- Data Loaded State -->
+      <template if:true="{hasData}">
+        <!-- Health Status Banner -->
+        <div
+          class="slds-box slds-box_x-small slds-m-bottom_medium health-banner slds-grid slds-grid_vertical-align-center slds-grid_align-spread"
+        >
+          <div class="slds-grid slds-grid_vertical-align-center">
+            <lightning-badge label="{inventoryData.stockoutRiskLevel}" class="{badgeClass}"></lightning-badge>
+            <div class="slds-m-left_small">
+              <h3 class="slds-text-heading_small slds-text-title_bold">{inventoryData.productTitle}</h3>
+              <p class="slds-text-body_small slds-text-color_weak">
+                SKU: <code class="sku-code">{inventoryData.sku}</code> &bull; Location: {inventoryData.locationName}
+              </p>
+            </div>
+          </div>
+          <div class="slds-text-align_right">
+            <span class="days-cover-number">{inventoryData.daysOfCover}</span>
+            <span class="slds-text-title_bold slds-m-left_xx-small">Days of Cover</span>
+          </div>
+        </div>
+
+        <!-- Metrics Grid -->
+        <div class="slds-grid slds-wrap slds-gutters slds-m-bottom_small">
+          <!-- Metric 1: Available Stock -->
+          <div class="slds-col slds-size_1-of-2 slds-medium-size_1-of-4 slds-m-bottom_small">
+            <div class="metric-card slds-p-around_small slds-text-align_center">
+              <p class="slds-text-title slds-text-color_weak">Available Stock</p>
+              <h4 class="metric-value slds-text-color_default">{inventoryData.quantityAvailable}</h4>
+              <p class="slds-text-body_small slds-text-color_weak">
+                {inventoryData.quantityOnHand} on hand ({inventoryData.quantityReserved} res.)
+              </p>
+            </div>
+          </div>
+
+          <!-- Metric 2: WMA Daily Velocity -->
+          <div class="slds-col slds-size_1-of-2 slds-medium-size_1-of-4 slds-m-bottom_small">
+            <div class="metric-card slds-p-around_small slds-text-align_center">
+              <p class="slds-text-title slds-text-color_weak">Daily Velocity (WMA)</p>
+              <h4 class="metric-value text-accent">{inventoryData.dailyVelocityWMA}</h4>
+              <p class="slds-text-body_small slds-text-color_weak">units consumed / day</p>
+            </div>
+          </div>
+
+          <!-- Metric 3: Lead Time & Reorder Point -->
+          <div class="slds-col slds-size_1-of-2 slds-medium-size_1-of-4 slds-m-bottom_small">
+            <div class="metric-card slds-p-around_small slds-text-align_center">
+              <p class="slds-text-title slds-text-color_weak">Reorder Point</p>
+              <h4 class="metric-value">{inventoryData.reorderPoint}</h4>
+              <p class="slds-text-body_small slds-text-color_weak">{inventoryData.leadTimeDays}d lead time</p>
+            </div>
+          </div>
+
+          <!-- Metric 4: Recommended Reorder Qty -->
+          <div class="slds-col slds-size_1-of-2 slds-medium-size_1-of-4 slds-m-bottom_small">
+            <div class="metric-card slds-p-around_small slds-text-align_center highlight-metric">
+              <p class="slds-text-title slds-text-color_weak">Recommended Reorder</p>
+              <h4 class="metric-value metric-reorder">{inventoryData.recommendedReorderQty}</h4>
+              <p class="slds-text-body_small slds-text-color_weak">units suggested</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Supplier & Last Sync Info -->
+        <div
+          class="slds-grid slds-grid_align-spread slds-text-body_small slds-text-color_weak slds-border_top slds-p-top_small"
+        >
+          <div>
+            <span>Supplier: <strong>{inventoryData.supplierName}</strong></span>
+          </div>
+          <div>
+            <span>Last Synced: {formattedLastForecast}</span>
+          </div>
+        </div>
+      </template>
+
+      <!-- Empty State -->
+      <template if:false="{hasData}">
+        <template if:false="{isLoading}">
+          <div class="slds-illustration slds-illustration_small slds-p-around_large slds-text-align_center">
+            <div class="slds-text-heading_medium slds-m-bottom_x-small">No Forecast Snapshot Available</div>
+            <p class="slds-text-body_regular slds-text-color_weak">
+              Waiting for incoming forecast telemetry from <code>shopify-ai-forecast-app</code> for this record.
+            </p>
+          </div>
+        </template>
+      </template>
+    </div>
+
+    <!-- Modal: Draft Purchase Order -->
+    <template if:true="{isModalOpen}">
+      <section role="dialog" tabindex="-1" class="slds-modal slds-fade-in-open slds-modal_small" aria-modal="true">
+        <div class="slds-modal__container">
+          <header class="slds-modal__header">
+            <button
+              class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse"
+              title="Close"
+              onclick="
+                {
+                  handleCloseReorderModal;
+                }
+              "
+            >
+              <lightning-icon icon-name="utility:close" alternative-text="close" size="small"></lightning-icon>
+            </button>
+            <h2 class="slds-modal__title slds-hyphenate">Draft Replenishment Purchase Order</h2>
+          </header>
+          <div class="slds-modal__content slds-p-around_medium">
+            <div class="slds-form slds-form_stacked">
+              <lightning-input label="SKU" value="{inventoryData.sku}" disabled></lightning-input>
+              <lightning-input label="Supplier" value="{inventoryData.supplierName}" disabled></lightning-input>
+              <lightning-input
+                type="number"
+                label="Order Quantity (Units)"
+                value="{reorderQtyInput}"
+                onchange="
+                  {
+                    handleQtyChange;
+                  }
+                "
+                required
+              >
+              </lightning-input>
+              <p class="slds-text-body_small slds-text-color_weak slds-m-top_x-small">
+                Deterministic forecast engine recommends ordering
+                <strong>{inventoryData.recommendedReorderQty} units</strong> to cover lead time buffer.
+              </p>
+            </div>
+          </div>
+          <footer class="slds-modal__footer">
+            <lightning-button
+              label="Cancel"
+              onclick="
+                {
+                  handleCloseReorderModal;
+                }
+              "
+            ></lightning-button>
+            <lightning-button
+              label="Confirm &amp; Draft PO"
+              variant="brand"
+              onclick="
+                {
+                  handleSubmitReorder;
+                }
+              "
+              class="slds-m-left_small"
+            ></lightning-button>
+          </footer>
+        </div>
+      </section>
+      <div class="slds-backdrop slds-backdrop_open"></div>
+    </template>
+  </lightning-card>
+</template>

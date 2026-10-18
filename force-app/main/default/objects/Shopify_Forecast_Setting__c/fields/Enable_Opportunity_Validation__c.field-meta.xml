@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Enable_Opportunity_Validation__c</fullName>
+    <defaultValue>true</defaultValue>
+    <description>Enable real-time stock and stockout risk verification when sales reps add items to Opportunities.</description>
+    <externalId>false</externalId>
+    <label>Enable Opportunity Validation</label>
+    <trackTrending>false</trackTrending>
+    <type>Checkbox</type>
+</CustomField>

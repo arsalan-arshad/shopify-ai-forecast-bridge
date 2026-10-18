@@ -1,0 +1,69 @@
+:host {
+  display: block;
+}
+
+.health-banner {
+  border-radius: 8px;
+  background: #f8fafc;
+  border-left: 4px solid #0176d3;
+}
+
+.sku-code {
+  background: #e2e8f0;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-family: monospace;
+  font-size: 0.85rem;
+}
+
+.days-cover-number {
+  font-size: 1.75rem;
+  font-weight: 800;
+  color: #0f172a;
+}
+
+.metric-card {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  transition: all 0.2s ease-in-out;
+}
+
+.metric-card:hover {
+  border-color: #cbd5e1;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.highlight-metric {
+  background: #f0fdf4;
+  border-color: #bbf7d0;
+}
+
+.metric-value {
+  font-size: 1.4rem;
+  font-weight: 700;
+  margin: 4px 0;
+}
+
+.text-accent {
+  color: #0284c7;
+}
+
+.metric-reorder {
+  color: #16a34a;
+}
+
+.badge-critical {
+  --slds-c-badge-color-background: #ea001e;
+  --slds-c-badge-text-color: #ffffff;
+}
+
+.badge-warning {
+  --slds-c-badge-color-background: #fe9339;
+  --slds-c-badge-text-color: #ffffff;
+}
+
+.badge-healthy {
+  --slds-c-badge-color-background: #2e844a;
+  --slds-c-badge-text-color: #ffffff;
+}

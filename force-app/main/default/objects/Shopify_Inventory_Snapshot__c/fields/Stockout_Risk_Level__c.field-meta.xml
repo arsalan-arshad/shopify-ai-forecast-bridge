@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Stockout_Risk_Level__c</fullName>
+    <description>Current inventory health status badge.</description>
+    <externalId>false</externalId>
+    <label>Stockout Risk Level</label>
+    <required>false</required>
+    <trackHistory>true</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>CRITICAL</fullName>
+                <default>false</default>
+                <label>CRITICAL</label>
+            </value>
+            <value>
+                <fullName>REORDER_SOON</fullName>
+                <default>false</default>
+                <label>REORDER_SOON</label>
+            </value>
+            <value>
+                <fullName>HEALTHY</fullName>
+                <default>true</default>
+                <label>HEALTHY</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

@@ -1,0 +1,65 @@
+name: Release - Package & GitHub Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  publish-release:
+    name: Publish Release & Package Assets
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: 'npm'
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Run Test Suite
+        run: npm test
+
+      - name: Extract Tag & Version
+        id: vars
+        run: |
+          TAG_NAME=${GITHUB_REF#refs/tags/}
+          VERSION=${TAG_NAME#v}
+          echo "tag=$TAG_NAME" >> $GITHUB_OUTPUT
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.vars.outputs.tag }}
+          name: Release ${{ steps.vars.outputs.tag }} - Shopify AI Forecast & Inventory Intelligence Bridge
+          body: |
+            ## 🚀 Shopify AI Forecast & Inventory Intelligence Bridge `${{ steps.vars.outputs.tag }}`
+
+            ### 📦 2GP Package Installation Links
+            - **Production / Developer Edition:** [Install in Production](https://login.salesforce.com/packaging/installPackage.apexp?p0=04tg7000000YA1sAAG)
+            - **Sandbox:** [Install in Sandbox](https://test.salesforce.com/packaging/installPackage.apexp?p0=04tg7000000YA1sAAG)
+            - **Package ID:** `04tg7000000YA1sAAG`
+
+            ### ⚡ What's New in This Release
+            - **Deterministic Forecast Engine Bridge:** Ingestion of Shopify app WMA velocity, days-of-cover, and lead-time calculations directly into Salesforce.
+            - **Proactive Stockout & Reorder Automation:** Inbound webhook receiver (`ShopifyForecastReceiver`) automatically creates high-priority Procurement Tasks and Purchase Order drafts when SKUs hit reorder points (`days_of_cover <= lead_time`).
+            - **Forecast Intelligence LWC (`shopifyForecastIntelligence`):** Real-time inventory telemetry card with multi-location stock, daily burn rate, and dynamic health risk badges (`CRITICAL`, `REORDER_SOON`, `HEALTHY`).
+            - **Grounded Conversational AI Assistant LWC (`shopifyForecastChat`):** Embedded AI inventory assistant powered by BYOK Gemini/Claude architecture with deterministic grounding.
+            - **B2B Deal Protection (`ValidateOpportunityStock`):** Real-time inventory risk checks when adding Opportunity Line Items, preventing sales reps from overselling depleted storefront stock.
+
+            ### 🛠️ Verification & Quality
+            - **Apex Code Coverage:** $\ge 90\%$
+            - **Cryptographic Security:** Timing-safe HMAC-SHA256 signature validation
+            - **Architecture:** `WITH USER_MODE`, `with sharing`, SLDS Design System compliance
+          draft: false
+          prerelease: false

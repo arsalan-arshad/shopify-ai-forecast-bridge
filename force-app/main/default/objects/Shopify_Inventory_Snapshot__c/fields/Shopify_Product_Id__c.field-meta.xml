@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Shopify_Product_Id__c</fullName>
+    <description>Shopify Global Product ID (e.g. gid://shopify/Product/123456789).</description>
+    <externalId>false</externalId>
+    <label>Shopify Product ID</label>
+    <length>100</length>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>
