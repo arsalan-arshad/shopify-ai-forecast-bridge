@@ -1,8 +1,8 @@
 {
   "packageDirectories": [
     {
-      "versionName": "ver 0.1",
-      "versionNumber": "0.1.0.NEXT",
+      "versionName": "ver 0.1.1",
+      "versionNumber": "0.1.1.NEXT",
       "path": "force-app",
       "default": true,
       "package": "ShopifyAIForecastBridge",
@@ -15,6 +15,6 @@
   "sourceApiVersion": "61.0",
   "packageAliases": {
     "ShopifyAIForecastBridge": "0Hog70000004FTVCA2",
-    "ShopifyAIForecastBridge@0.1.0-1": "04tg7000000YxVVAA0"
+    "ShopifyAIForecastBridge@0.1.1-1": "04tg7000000YxVVAA0"
   }
 }
